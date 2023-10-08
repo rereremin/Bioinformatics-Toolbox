@@ -115,6 +115,3 @@ def filter_fastq(dict_of_fastq:dict, gc_bounds:tuple, length_bounds=(0, 2**32), 
 
 
     return ans_dict
-
-d = filter_fastq(EXAMPLE_FASTQ, (20, 80), (0, 80), 30)
-print(d)
