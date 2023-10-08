@@ -313,12 +313,3 @@ def run_protein_tools(*args: str):
         return results[0]
     else:
         return results
-    
-print(run_protein_tools("YWRIKL", "compute_molecular_weight"))
-print(run_protein_tools("YWRIKL", "compute_length"))
-print(run_protein_tools("YWRIKL", "compute_hydrophobicity"))
-print(run_protein_tools("YWRIKL", "count_amino_acids"))
-print(run_protein_tools("AUGGUAGGGAAAUUUUGA", "MGGVF*", "check_mutations"))
-
-
-
