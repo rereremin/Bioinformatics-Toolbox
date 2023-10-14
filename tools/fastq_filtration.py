@@ -85,8 +85,18 @@ def filter_by_gc_level(seq:str, gc_bounds:tuple) -> str:
 
 def save_filtered_fastq(func_return:tuple) -> str:
     """
-    
+    Save filtered fastq-sequencies and their characteristics in directory,
+    which called fastq_filtrator_resuls.
+    If directory is absent, create it. If output_filename is empty, use start_path to name file.
+
+    Arguments:
+    - func_return (tuple): tuple of three items 
+    (dictionary with filtered fastq-seqs, name of output file, name of starting file)
+
+    Return:
+    - str, f"Fastq-seqs write in {output_filename} file."
     """
+    
     dict_of_filtered_fastq = func_return[0]
     output_filename = func_return[1]
     start_path = func_return[2]
