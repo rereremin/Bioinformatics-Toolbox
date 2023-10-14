@@ -69,7 +69,7 @@ def filter_by_gc_level(seq:str, gc_bounds:tuple) -> str:
     if cur_gc_level >= bottom_bound and cur_gc_level <= top_bound:
         return seq
 
-def save_filtered_fastq(func_return:tuple) -> str:
+def save_filtered_fastq(dict_of_filtered_fastq:dict, start_path:str, output_filename) -> str:
     """
     Save filtered fastq-sequencies and their characteristics in directory,
     which called fastq_filtrator_resuls.
