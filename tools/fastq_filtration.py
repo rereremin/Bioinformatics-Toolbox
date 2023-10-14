@@ -86,7 +86,7 @@ def filter_by_gc_level(seq:str, gc_bounds:tuple) -> str:
 
     
 
-def filter_fastq(dict_of_fastq:dict, gc_bounds:tuple, length_bounds=(0, 2**32), quality_threshold=0) -> list:
+def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bounds=(0, 2**32), quality_threshold=0) -> dict:
     """
     Function containing conditions to filtration fastq-sequences.
     
@@ -100,18 +100,27 @@ def filter_fastq(dict_of_fastq:dict, gc_bounds:tuple, length_bounds=(0, 2**32), 
     - quality_threshold (int): allow filter sequence and it is the bottom bound. Has got default value: 0.
     """
 
-    seqs_with_qualities = [pair for pair in dict_of_fastq.values()]
+    with open(os.path.join(input_path, output_filename)) as fastq_file:
 
-    pairs = []
-    for pair in seqs_with_qualities:
-        if (filter_by_gc_level(pair[0], gc_bounds) and filtre_by_length(pair[0], length_bounds) and filter_by_quality(pair, quality_threshold)) != None:
-            pairs.append(pair)
+        fastq_lines = [line.strip('\n') for line in fastq_file.readlines()]
+
+        dict_of_fastq = dict()
+        for i in range(0, len(fastq_lines), 4):
+            dict_of_fastq[fastq_lines[i]] = tuple(fastq_lines[i+1:i+4])
+
+
+    seqs_with_qualities = [triplet for triplet in dict_of_fastq.values()]
+
+    triplets = []
+    for triplet in seqs_with_qualities:
+        if (filter_by_gc_level(triplet[0], gc_bounds) and filtre_by_length(triplet[0], length_bounds) and filter_by_quality((triplet[0],triplet[2]), quality_threshold)) != None:
+            triplets.append(triplet)
 
     ans_dict = {}
-    for pair in pairs:
+    for triplet in triplets:
         for item in dict_of_fastq.items():
-            if pair in item:
-                ans_dict[item[0]] = pair
+            if triplet in item:
+                ans_dict[item[0]] = triplet
 
 
     return ans_dict
