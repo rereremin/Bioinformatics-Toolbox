@@ -135,7 +135,7 @@ def read_fastq_file(input_path:str) -> dict:
     
     return dict_of_fastq
 
-def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bounds=(0, 2**32), quality_threshold=0) -> dict:
+def filter_fastq(input_path:str, gc_bounds:tuple, length_bounds=(0, 2**32), quality_threshold=0, output_filename="") -> str:
     """
     Function containing conditions to filtration fastq-sequences.
     
@@ -143,12 +143,15 @@ def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bo
     Returns the result of the filtration in dictionary.
 
     Arguments:
-    - dict_of_fastq (dict): dictionary with fastq-seq in format 'name' : ('sequence', 'quality')
+    - input_path (str): name of file with fastq-seqs
+    - dict_of_fastq (dict): dictionary with fastq-seq in format {'name' : ('sequence', 'comment', 'quality)}
     - gc_bounds (tuple or int): bottom and top bound to filtration. Use only top bound if gc_bound is int
     - length_bounds (tuple): bottom and top bound to filtration. Has got default value: (0, 2**32).
     - quality_threshold (int): allow filter sequence and it is the bottom bound. Has got default value: 0.
+    - output_filename (str): file, where writes filtered fastq-seqs
     """
-
+    dict_of_fastq = read_fastq_file(input_path)
+    
     with open(os.path.abspath(input_path)) as fastq_file:
 
         fastq_lines = [line.strip('\n') for line in fastq_file.readlines()]
@@ -171,5 +174,8 @@ def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bo
             if triplet in item:
                 ans_dict[item[0]] = triplet
 
-
-    return ans_dict
+    save_filtered_fastq(ans_dict, input_path, output_filename)
+    
+    if output_filename == "":
+        return  f"FASTQ-seq write in {input_path} file."
+    return f"FASTQ-seq write in {output_filename} file."
