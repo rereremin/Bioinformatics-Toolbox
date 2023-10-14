@@ -83,8 +83,29 @@ def filter_by_gc_level(seq:str, gc_bounds:tuple) -> str:
     if cur_gc_level >= bottom_bound and cur_gc_level <= top_bound:
         return seq
 
-
+def save_filtered_fastq(func_return:tuple) -> str:
+    """
     
+    """
+    dict_of_filtered_fastq = func_return[0]
+    output_filename = func_return[1]
+    start_path = func_return[2]
+
+    cur_dir = 'fastq_filtrator_resuls'
+
+    if output_filename == "" and cur_dir not in os.listdir(os.getcwd()):
+        output_filename = start_path
+        os.mkdir(cur_dir)
+    elif output_filename != "" and cur_dir not in os.listdir(os.getcwd()):
+        os.mkdir(cur_dir)
+
+    with open(os.path.join(cur_dir, output_filename), mode='w') as file:
+        for fastq_seq in dict_of_filtered_fastq.items():
+            file.write(fastq_seq[0]+'\n')
+            file.write(fastq_seq[1][0]+'\n')
+            file.write(fastq_seq[1][1]+'\n')
+            file.write(fastq_seq[1][2]+'\n')
+    return f"Fastq-seqs write in {output_filename} file."  
 
 def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bounds=(0, 2**32), quality_threshold=0) -> dict:
     """
