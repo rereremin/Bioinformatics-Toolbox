@@ -90,16 +90,14 @@ def save_filtered_fastq(func_return:tuple) -> str:
     If directory is absent, create it. If output_filename is empty, use start_path to name file.
 
     Arguments:
-    - func_return (tuple): tuple of three items 
-    (dictionary with filtered fastq-seqs, name of output file, name of starting file)
-
-    Return:
-    - str, f"Fastq-seqs write in {output_filename} file."
-    """
+    - dict_of_filtered_fastq (dict): dict with filtered fastq-seqs
+    - start_path (str): name of starting file
+    - output_filename (str): name of output file
     
-    dict_of_filtered_fastq = func_return[0]
-    output_filename = func_return[1]
-    start_path = func_return[2]
+    Return None
+    """
+    if output_filename != "" and output_filename.split(".")[1] != "fastq":
+        raise ValueError(f"Not a FASTQ format of {output_filename} file")
 
     cur_dir = 'fastq_filtrator_resuls'
 
@@ -108,14 +106,15 @@ def save_filtered_fastq(func_return:tuple) -> str:
         os.mkdir(cur_dir)
     elif output_filename != "" and cur_dir not in os.listdir(os.getcwd()):
         os.mkdir(cur_dir)
+    elif output_filename == "" and cur_dir in os.listdir(os.getcwd()):
+        output_filename = start_path
 
     with open(os.path.join(cur_dir, output_filename), mode='w') as file:
         for fastq_seq in dict_of_filtered_fastq.items():
             file.write(fastq_seq[0]+'\n')
             file.write(fastq_seq[1][0]+'\n')
             file.write(fastq_seq[1][1]+'\n')
-            file.write(fastq_seq[1][2]+'\n')
-    return f"Fastq-seqs write in {output_filename} file."  
+            file.write(fastq_seq[1][2]+'\n') 
 
 def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bounds=(0, 2**32), quality_threshold=0) -> dict:
     """
