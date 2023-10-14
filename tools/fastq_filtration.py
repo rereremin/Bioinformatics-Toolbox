@@ -116,6 +116,25 @@ def save_filtered_fastq(func_return:tuple) -> str:
             file.write(fastq_seq[1][1]+'\n')
             file.write(fastq_seq[1][2]+'\n') 
 
+def read_fastq_file(input_path:str) -> dict:
+    """
+    Read lines in fastq-file.
+    
+    Arguments:
+    - input_path (str): name of file with fastq-seqs
+
+    Return dictionary in the format 'name':('seq', '')
+    """
+    with open(os.path.abspath(input_path)) as fastq_file:
+
+        fastq_lines = [line.strip('\n') for line in fastq_file.readlines()]
+
+        dict_of_fastq = dict()
+        for i in range(0, len(fastq_lines), 4):
+            dict_of_fastq[fastq_lines[i]] = tuple(fastq_lines[i+1:i+4])
+    
+    return dict_of_fastq
+
 def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bounds=(0, 2**32), quality_threshold=0) -> dict:
     """
     Function containing conditions to filtration fastq-sequences.
