@@ -100,7 +100,7 @@ def filter_fastq(input_path:str, output_filename:str, gc_bounds:tuple, length_bo
     - quality_threshold (int): allow filter sequence and it is the bottom bound. Has got default value: 0.
     """
 
-    with open(os.path.join(input_path, output_filename)) as fastq_file:
+    with open(os.path.abspath(input_path)) as fastq_file:
 
         fastq_lines = [line.strip('\n') for line in fastq_file.readlines()]
 
