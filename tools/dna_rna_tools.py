@@ -1,17 +1,12 @@
 DNA_ALPHABET = {"A", "T", "G", "C", "a", "t", "g", "c"}
-
 RNA_ALPHABET = {"A", "U", "G", "C", "a", "u", "g", "c"}
-
 RNA_COMPLEMENT_NUCLS = { "A":"U", "U":"A", "a":"u", "u":"a", "G":"C", "C":"G", "c":"g", "g":"c"}
-
 DNA_COMPLEMENT_NUCLS = {"A":"T", "T":"A", "a": "t", "t":"a", "G":"C", "C":"G", "g":"c", "c":"g"}
-
 
 def check_nucl_acid(seq:str, nucl_type) -> bool:
     """
     Check the sequence is RNA or DNA, return boolean.
     """
-    # nucl_type -- как раз тут скажем, проверка на ДНК или РНК
     if nucl_type == "rna":
         possible_nucls = RNA_ALPHABET
     elif nucl_type == "dna":
@@ -36,11 +31,10 @@ def reverse_complement(seq:str) -> str:
     - "ACACARRR","UATGC","UUuAUAUA" -> ["It isn't RNA or DNA.", "It isn't RNA or DNA.", 'UAUAUaAA']
     """
     if check_nucl_acid(seq, "dna") or check_nucl_acid(seq, "rna"):
-        return reverse_seq(complement_seq(seq))
-    return "It isn't RNA or DNA."
-   
+        return reverse(complement(seq))    
+    raise ValueError(f"{seq} isn't RNA or DNA.")    
     
-def complement_seq(seq:str) -> str:
+def complement(seq:str) -> str:
     """
     Perform complementary complementary sequence of RNA or DNA.
 
@@ -60,16 +54,14 @@ def complement_seq(seq:str) -> str:
         compl_nucls_map = DNA_COMPLEMENT_NUCLS
     elif check_nucl_acid(seq, "rna"):
         compl_nucls_map = RNA_COMPLEMENT_NUCLS
-    else:
-        return "It isn't RNA or DNA."
+    raise ValueError(f"{seq} isn't RNA or DNA.")
     
     trans_seq = ""
     for nucl in seq:
         trans_seq += compl_nucls_map[nucl]
     return trans_seq
     
-
-def reverse_seq(seq:str) -> str:
+def reverse(seq:str) -> str:
     """
     Perform reverse DNA or RNA sequence.
 
@@ -86,9 +78,8 @@ def reverse_seq(seq:str) -> str:
     """
     if check_nucl_acid(seq, "dna") or check_nucl_acid(seq, "rna"):
         return seq[::-1]
-    return "It isn't RNA or DNA."
+    raise ValueError(f"{seq} isn't RNA or DNA.")
        
-
 def transcribe_dna(seq:str) -> str:
     """
     Perform the transcribtion of DNA into mRNA.
@@ -111,8 +102,6 @@ def transcribe_dna(seq:str) -> str:
         return seq + " is RNA."
     return "It isn't RNA or DNA."
     
-
-
 def run_dna_rna_tools(*args) -> list: 
     """
     Function containing methods for nucleic acids analysis.
@@ -126,14 +115,13 @@ def run_dna_rna_tools(*args) -> list:
     
     operations = {
         "transcribe_dna":transcribe_dna, 
-        "reverse_seq":reverse_seq, 
-        "complement_seq":complement_seq, 
+        "reverse":reverse, 
+        "complement":complement, 
         "reverse_complement":reverse_complement
     }
     new_seqs = []
     for seq in seqs:
         new_seqs.append(operations[procedure](seq))
-    
     
     if len(new_seqs) == 1:
         return new_seqs[0] 
