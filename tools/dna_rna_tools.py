@@ -54,7 +54,8 @@ def complement(seq:str) -> str:
         compl_nucls_map = DNA_COMPLEMENT_NUCLS
     elif check_nucl_acid(seq, "rna"):
         compl_nucls_map = RNA_COMPLEMENT_NUCLS
-    raise ValueError(f"{seq} isn't RNA or DNA.")
+    else:
+        raise ValueError(f"{seq} isn't RNA or DNA.")
     
     trans_seq = ""
     for nucl in seq:
@@ -99,8 +100,8 @@ def transcribe_dna(seq:str) -> str:
     if check_nucl_acid(seq, "dna"):
         return seq.replace("T", "U").replace("t", "u")
     elif check_nucl_acid(seq, "rna"):
-        return seq + " is RNA."
-    return "It isn't RNA or DNA."
+        raise ValueError(f"{seq} is RNA.")
+    raise ValueError(f"{seq} isn't RNA or DNA.")
     
 def run_dna_rna_tools(*args) -> list: 
     """
@@ -126,4 +127,3 @@ def run_dna_rna_tools(*args) -> list:
     if len(new_seqs) == 1:
         return new_seqs[0] 
     return new_seqs
-    
