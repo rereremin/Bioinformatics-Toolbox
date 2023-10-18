@@ -33,17 +33,27 @@ The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools`,
 ### Examples
 #### dna_rna_tools
 ```python
-run_dna_rna_tools("ATCATAGA","CAGatAGC","ACACARRR","UATGC","UUUAUAUA","transcribe_dna")
-# ['AUCAUAGA', 'CAGauAGC', "It isn't RNA or DNA", "It isn't RNA or DNA", 'UUUAUAUA is RNA.']
+run_dna_rna_tools("ATCATAGA","CAGatAGC","transcribe_dna")
+# ['AUCAUAGA', 'CAGauAGC']
+run_dna_rna_tools("UAVGCGCGC","transcribe_dna")
+# ValueError: UAVGCGCGC isn't RNA or DNA.
+run_dna_rna_tools("UAGCGCGC","transcribe_dna")
+# ValueError: UAVGCGCGC isn't RNA or DNA.
 
-run_dna_rna_tools("ATCATAGA","CAGatAGC", "ACACARRR","UATGC","UUUAUAUA", "reverse_seq")
-#['AGATACTA', 'CGAtaGAC', "It isn't RNA or DNA.", "It isn't RNA or DNA.", 'AUAUAUUU']
+run_dna_rna_tools("ATCATAGA","CAGatAGC","UUUAUAUA", "reverse")
+# # ['AGATACTA', 'CGAtaGAC', 'AUAUAUUU']
+run_dna_rna_tools("ACACARRR", "reverse")
+# ValueError: ACACARRR isn't RNA or DNA.
 
-run_dna_rna_tools("ATCATAGA","CAGatAGC", "ACACARRR","UATGC","UUUAUAUA", "complement_seq")
-#['TAGTATCT', 'GTCtaTCG', "It isn't RNA or DNA.", "It isn't RNA or DNA.", 'AAaUAUAU']
+run_dna_rna_tools("ATCATAGA","CAGatAGC","UUUAUAUA", "complement")
+# # ['TAGTATCT', 'GTCtaTCG', 'AAAUAUAU']
+run_dna_rna_tools("ACACARRR", "complement")
+# # ValueError: ACACARRR isn't RNA or DNA.
 
-run_dna_rna_tools("ATCATAGA","CAGatAGC","ACACARRR","UATGC","UUuAUAUA", 'reverse_complement')
-#['TCTATGAT', 'GCTatCTG',"It isn't RNA or DNA.", "It isn't RNA or DNA.", 'UAUAUaAA']
+run_dna_rna_tools("ATCATAGA","CAGatAGC","UUuAUAUA", 'reverse_complement')
+# # ['TCTATGAT', 'GCTatCTG', 'UAUAUaAA']
+run_dna_rna_tools("ACACARRR", "reverse_complement")
+# #  ValueError: ACACARRR isn't RNA or DNA.
 ```
 #### protein_tools
 ```python
