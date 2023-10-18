@@ -65,18 +65,18 @@ def filter_by_gc_level(seq:str, gc_bounds:tuple) -> str:
         if nucl == "G" or nucl == "C":
             gc_amount += 1
     
-    cur_gc_level = round(gc_amount / len(seq) * 100, 4)
+    cur_gc_level = gc_amount / len(seq) * 100
     if cur_gc_level >= bottom_bound and cur_gc_level <= top_bound:
         return seq
 
-def save_filtered_fastq(dict_of_filtered_fastq:dict, start_path:str, output_filename) -> str:
+def save_filtered_fastq(filtered_fastq:dict, start_path:str, output_filename) -> str:
     """
     Save filtered fastq-sequencies and their characteristics in directory,
     which called fastq_filtrator_resuls.
     If directory is absent, create it. If output_filename is empty, use start_path to name file.
 
     Arguments:
-    - dict_of_filtered_fastq (dict): dict with filtered fastq-seqs
+    - filtered_fastq (dict): dict with filtered fastq-seqs
     - start_path (str): name of starting file
     - output_filename (str): name of output file
     
@@ -96,7 +96,7 @@ def save_filtered_fastq(dict_of_filtered_fastq:dict, start_path:str, output_file
         output_filename = start_path
 
     with open(os.path.join(cur_dir, output_filename), mode='w') as file:
-        for fastq_seq in dict_of_filtered_fastq.items():
+        for fastq_seq in filtered_fastq.items():
             file.write(fastq_seq[0]+'\n')
             file.write(fastq_seq[1][0]+'\n')
             file.write(fastq_seq[1][1]+'\n')
@@ -109,7 +109,7 @@ def read_fastq_file(input_path:str) -> dict:
     Arguments:
     - input_path (str): name of file with fastq-seqs
 
-    Return dictionary in the format 'name':('seq', '')
+    Return dictionary in the format 'name':('seq', 'quality')
     """
     with open(os.path.abspath(input_path)) as fastq_file:
 
@@ -130,38 +130,29 @@ def filter_fastq(input_path:str, gc_bounds:tuple, length_bounds=(0, 2**32), qual
 
     Arguments:
     - input_path (str): name of file with fastq-seqs
-    - dict_of_fastq (dict): dictionary with fastq-seq in format {'name' : ('sequence', 'comment', 'quality)}
     - gc_bounds (tuple or int): bottom and top bound to filtration. Use only top bound if gc_bound is int
     - length_bounds (tuple): bottom and top bound to filtration. Has got default value: (0, 2**32).
     - quality_threshold (int): allow filter sequence and it is the bottom bound. Has got default value: 0.
     - output_filename (str): file, where writes filtered fastq-seqs
     """
-    dict_of_fastq = read_fastq_file(input_path)
+    fastqs = read_fastq_file(input_path)
     
-    with open(os.path.abspath(input_path)) as fastq_file:
+    seqs_with_qualities = [seq_and_quality for seq_and_quality in fastqs.values()]
 
-        fastq_lines = [line.strip('\n') for line in fastq_file.readlines()]
-
-        dict_of_fastq = dict()
-        for i in range(0, len(fastq_lines), 4):
-            dict_of_fastq[fastq_lines[i]] = tuple(fastq_lines[i+1:i+4])
-
-
-    seqs_with_qualities = [triplet for triplet in dict_of_fastq.values()]
-
-    triplets = []
-    for triplet in seqs_with_qualities:
-        if (filter_by_gc_level(triplet[0], gc_bounds) and filtre_by_length(triplet[0], length_bounds) and filter_by_quality((triplet[0],triplet[2]), quality_threshold)) != None:
-            triplets.append(triplet)
+    lines_of_seqs = []
+    for seq_and_quality in seqs_with_qualities:
+        if (filter_by_gc_level(seq_and_quality[0], gc_bounds) and filtre_by_length(seq_and_quality[0], length_bounds) and filter_by_quality((seq_and_quality[0],seq_and_quality[2]), quality_threshold)) != None:
+            lines_of_seqs.append(seq_and_quality)
 
     results = {}
-    for triplet in triplets:
-        for item in dict_of_fastq.items():
-            if triplet in item:
-                results[item[0]] = triplet
+    for seq_and_quality in lines_of_seqs:
+        for fastq in fastqs.items():
+            if seq_and_quality in fastq:
+                results[fastq[0]] = seq_and_quality
 
-    save_filtered_fastq(ans_dict, input_path, output_filename)
+    save_filtered_fastq(results, input_path, output_filename)
     
     if output_filename == "":
         return  f"FASTQ-seq write in {input_path} file."
     return f"FASTQ-seq write in {output_filename} file."
+
