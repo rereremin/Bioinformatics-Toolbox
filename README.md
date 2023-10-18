@@ -24,11 +24,13 @@ The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools` 
 - `count_amino_acids` - calculates the number of each aminoacid in protein sequence
 
 #### fastq_filtration
-- `filter_by_quality` -  filter fastq-sequence by quality and decoding quality sequence into q-score list and calculate quality
-- `filtre_by_length` - filter fastq-sequence by length
-- `filter_by_gc_level` - filter sequence by gc-level
+- `filter_by_quality` -  filters fastq-sequence by quality and decoding quality sequence into q-score list and calculate quality
+- `filtre_by_length` - filters fastq-sequence by length
+- `filter_by_gc_level` - filters sequence by gc-level
+- `save_filtered_fastq` - Saves filtered fastq-sequencies and their characteristics in directory, which called fastq_filtrator_resuls
+- `read_fastq_file` - reads lines in fastq-file
 
-  **NOTE:** This three functions use together to filter fastq-library.
+  **NOTE:** This five functions use together to filter fastq-library and write it in file.
 
 #### bio_files_processor
 - `convert_multiline_fasta_to_oneline` - converts multiline fasta to oneline and writes in fasta file
@@ -36,7 +38,6 @@ The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools` 
 - `find_translation_in_gbk` - find translation-seq for one gene and return it
 - `find_flanking_genes` - find translation-seq for each of flanking gene and return a list of translation-seqs
 - `select_flanking_genes` - select flanking genes for one specific gene and return list of these genes
-- select_genes_from_gbk_to_fasta - select flanking genes from GBK for everyone in list of genes (genes)
   
   **NOTE:** `read_lines_from_gbk`, `find_translation_in_gbk`, `find_flanking_genes`, `select_flanking_genes` supporting functions for `select_genes_from_gbk_to_fasta`
   
