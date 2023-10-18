@@ -1,32 +1,11 @@
 ALPHABET_PROTEIN = {"A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y",}
-
 ALPHABET_RNA = {"A", "U", "G", "C"}
-
 AMINO_ACID_MASS = {
-    "A": 71.03711,
-    "R": 156.10111,
-    "N": 114.04293,
-    "D": 115.02694,
-    "C": 103.00919,
-    "Q": 128.05858,
-    "E": 129.04259,
-    "G": 57.02146,
-    "H": 137.05891,
-    "I": 113.08406,
-    "L": 113.08406,
-    "K": 128.09496,
-    "M": 131.04049,
-    "F": 147.06841,
-    "P": 97.05276,
-    "S": 87.03203,
-    "T": 101.04768,
-    "W": 186.07931,
-    "Y": 163.06333,
-    "V": 99.06841,
+    "A": 71.03711, "R": 156.10111, "N": 114.04293, "D": 115.02694, "C": 103.00919, "Q": 128.05858,"E": 129.04259,
+    "G": 57.02146, "H": 137.05891, "I": 113.08406, "L": 113.08406, "K": 128.09496,"M": 131.04049, "F": 147.06841,
+    "P": 97.05276, "S": 87.03203, "T": 101.04768,"W": 186.07931,"Y": 163.06333,"V": 99.06841,
 }
-
 GYDROPHOBIC_AMINOACIDS = {"A", "V", "L", "I", "P", "F", "W", "M"}
-
 DNA_CODONS = {
     "A": ["GCT", "GCC", "GCA", "GCG"],
     "C": ["TGT", "TGC"],
@@ -50,7 +29,6 @@ DNA_CODONS = {
     "Y": ["TAT", "TAC"],
     "*": ["UAA", "UAG", "UGA"],
 }
-
 RNA_CODONS = {
     "F": ["UUC", "UUU"],
     "L": ["UUA", "UUG", "CUU", "CUC", "CUA", "CUG"],
@@ -76,7 +54,6 @@ RNA_CODONS = {
     "G": ["GGU", "GGC", "GGA", "GGG"],
 }
 
-
 def is_protein(seq: str):
     """
     Check the sequence is protein return boolean.
@@ -84,14 +61,12 @@ def is_protein(seq: str):
     unique_chars = set(seq.upper())
     return unique_chars <= ALPHABET_PROTEIN
 
-
 def is_rna(seq: str):
     """
     Check the sequence is RNA, return boolean.
     """
     unique_chars = set(seq.upper())
     return unique_chars <= ALPHABET_RNA
-
 
 def compute_molecular_weight(protein: str) -> tuple:
     """
@@ -109,7 +84,6 @@ def compute_molecular_weight(protein: str) -> tuple:
         molecular_weight += AMINO_ACID_MASS[amino_acid]
     return protein, round(molecular_weight, 3)
 
-
 def compute_length(protein: str) -> tuple:
     """
     Compute the length of the input protein sequence.
@@ -121,7 +95,6 @@ def compute_length(protein: str) -> tuple:
     - tuple with protein sequence and computed length.
     """
     return protein, len(protein)
-
 
 def protein_to_dna(protein: str) -> str:
     """
@@ -149,7 +122,6 @@ def protein_to_dna(protein: str) -> str:
 
     return nucleic_acid_seq[:-1]
 
-
 def count_amino_acids(protein: str) -> dict:
     """
     Calculates the number of each aminoacid in a given protein sequence.
@@ -175,7 +147,6 @@ def count_amino_acids(protein: str) -> dict:
             amino_acids_dict[aa] = 1
     return amino_acids_dict
 
-
 def compute_hydrophobicity(protein: str) -> tuple:
     """
     Compute the percentage of gydrophobic aminoacids in protein sequence.
@@ -196,7 +167,6 @@ def compute_hydrophobicity(protein: str) -> tuple:
     percentage = round(count_of_gydrophobic / len(protein) * 100, 3)
 
     return protein, percentage
-
 
 def translate_rna(rna: str) -> str:
     """
@@ -225,7 +195,6 @@ def translate_rna(rna: str) -> str:
     start = protein.index("M")
     stop = protein.index("*")
     return "".join(protein[start : stop + 1])
-
 
 def check_mutations(rna: str, protein: str) -> str:
     """
@@ -274,7 +243,6 @@ def check_mutations(rna: str, protein: str) -> str:
         return "Protein without mutations."
     else:
         return "Mutations: " + ", ".join(bank_of_mutations) + "."
-
 
 def run_protein_tools(*args: str):
     """
