@@ -154,11 +154,11 @@ def filter_fastq(input_path:str, gc_bounds:tuple, length_bounds=(0, 2**32), qual
         if (filter_by_gc_level(triplet[0], gc_bounds) and filtre_by_length(triplet[0], length_bounds) and filter_by_quality((triplet[0],triplet[2]), quality_threshold)) != None:
             triplets.append(triplet)
 
-    ans_dict = {}
+    results = {}
     for triplet in triplets:
         for item in dict_of_fastq.items():
             if triplet in item:
-                ans_dict[item[0]] = triplet
+                results[item[0]] = triplet
 
     save_filtered_fastq(ans_dict, input_path, output_filename)
     
