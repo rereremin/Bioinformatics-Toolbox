@@ -4,7 +4,7 @@
 
 ### Usage
 
-The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools` which takes arbitrary number of arguments with nucleic acids and protein sequencies (*str*) and the name of the procedure to be performed (always the last argument, *str*, see the usage examples below). The output is the result of the procedure as *string or tuple* if one sequence is submitted or *list* if several. Tool include`filter_fastq`, which takes fastq-dict and three characteristics to filtration (*dict*, *tuple*, *tuple*, *int*) .The output is the result of the dictionary filtration as *dict*. Also tool include `convert_multiline_fasta_to_oneline`, which used as `cmf` and `select_genes_from_gbk_to_fasta`, which used as `sgf`.
+The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools` which takes arbitrary number of arguments with nucleic acids and protein sequencies (*str*) and the name of the procedure to be performed (always the last argument, *str*, see the usage examples below). The output is the result of the procedure as *string or tuple* if one sequence is submitted or *list* if several. Tool include`filter_fastq`, which takes fastq-dict and three characteristics to filtration (*dict*, *tuple*, *tuple*, *int*) .The output is the result of the dictionary filtration as *dict*. Also tool include `convert_multiline_fasta_to_oneline` and `select_genes_from_gbk_to_fasta`, these functions able to work with fasta and gbk (first function takes multiline fasta file, name of output file and returns oneline fasta file; second function takes GBK file, genes, and amount of genes before and after, output file name and returns fasta file with flanking genes groups).
 
 **NOTE:**  For the procedure `check_mutations` in `run_protein_tools` a fixed number of string arguments are used: one RNA sequence, one protein sequence and the name of procedure itself.
 
@@ -36,8 +36,9 @@ The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools` 
 - `find_translation_in_gbk` - find translation-seq for one gene and return it
 - `find_flanking_genes` - find translation-seq for each of flanking gene and return a list of translation-seqs
 - `select_flanking_genes` - select flanking genes for one specific gene and return list of these genes
+- select_genes_from_gbk_to_fasta - select flanking genes from GBK for everyone in list of genes (genes)
   
-  **NOTE:** `read_lines_from_gbk`, `find_translation_in_gbk`, `find_flanking_genes` supporting functions for `select_flanking_genes`
+  **NOTE:** `read_lines_from_gbk`, `find_translation_in_gbk`, `find_flanking_genes`, `select_flanking_genes` supporting functions for `select_genes_from_gbk_to_fasta`
   
 
 ### Examples
@@ -114,7 +115,21 @@ print(d)
 #'@SRX079804:1:SRR292678:1:1101:204480:204480': ('AGTGAGACACCCCTGAACATTCCTAGTAAGACATCTTTGAATATTACTAGTTAGCCACACTTTAAAATGACCCG','<98;<@@@:@CD@BCCDD=DBBCEBBAAA@9???@BCDBCGF=GEGDFGDBEEEEEFFFF=EDEE=DCD@@BBC')}
 ```
 #### convert_multiline_fasta_to_oneline
-- File with multiline fasta ([input](https://github.com/rereremin/Bioinformatics-Toolbox/blob/hw6/examples/example_multiline_fasta.fasta))
+```python
+  convert_multiline_fasta_to_oneline('example_multiline_fasta.fasta', "fasta1")
+```
+   ([example_fasta.fasta](https://github.com/rereremin/Bioinformatics-Toolbox/blob/hw6/examples/example_multiline_fasta.fasta)) ->  ([fasta1.fasta](https://github.com/rereremin/Bioinformatics-Toolbox/blob/hw6/examples/fasta1.fasta))
+
+#### select_genes_from_gbk_to_fasta
+```python
+   select_genes_from_gbk_to_fasta('example_gbk.gbk', 'uvrB', 2, 2, 'gbk1')
+```
+   ([example_gbk.gbk](https://github.com/rereremin/Bioinformatics-Toolbox/blob/hw6/examples/example_gbk.gbk)) -> ([gbk1.fasta](https://github.com/rereremin/Bioinformatics-Toolbox/blob/hw6/examples/gbk1.fasta))
+
+**NOTE:** 
+Structure of result fasta file:
+- every line in upper case is flanking genes of one gene, which write in lower case
+- between groups of flanking genes used empty line
    
 ### Additional information
 - The `dna_rna_tools` works **only** with DNA and RNA sequences. If any of the entered sequences contains inappropriate characters or cannot exist, the program prints message "It isn't RNA or DNA".
