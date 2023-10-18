@@ -4,7 +4,7 @@
 
 ### Usage
 
-The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools`, which takes arbitrary number of arguments with nucleic acids and protein sequencies (*str*) and the name of the procedure to be performed (always the last argument, *str*, see the usage examples below). The output is the result of the procedure as *string or tuple* if one sequence is submitted or *list* if several. Also tool include`filter_fastq`, which takes fastq-dict and three characteristics to filtration (*dict*, *tuple*, *tuple*, *int*) .The output is the result of the dictionary filtration as *dict*.
+The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools` which takes arbitrary number of arguments with nucleic acids and protein sequencies (*str*) and the name of the procedure to be performed (always the last argument, *str*, see the usage examples below). The output is the result of the procedure as *string or tuple* if one sequence is submitted or *list* if several. Tool include`filter_fastq`, which takes fastq-dict and three characteristics to filtration (*dict*, *tuple*, *tuple*, *int*) .The output is the result of the dictionary filtration as *dict*. Also tool include `convert_multiline_fasta_to_oneline`, which used as `cmf` and `select_genes_from_gbk_to_fasta`, which used as `sgf`.
 
 **NOTE:**  For the procedure `check_mutations` in `run_protein_tools` a fixed number of string arguments are used: one RNA sequence, one protein sequence and the name of procedure itself.
 
@@ -27,8 +27,18 @@ The tool works by calling the functions `run_dna_rna_tools`,`run_protein_tools`,
 - `filter_by_quality` -  filter fastq-sequence by quality and decoding quality sequence into q-score list and calculate quality
 - `filtre_by_length` - filter fastq-sequence by length
 - `filter_by_gc_level` - filter sequence by gc-level
-  
+
   **NOTE:** This three functions use together to filter fastq-library.
+
+#### bio_files_processor
+- `convert_multiline_fasta_to_oneline` - converts multiline fasta to oneline and writes in fasta file
+- `read_lines_from_gbk` - reads lines in GBK and find lines with common pattern and creates a list with strings, which start with this pattern
+- `find_translation_in_gbk` - find translation-seq for one gene and return it
+- `find_flanking_genes` - find translation-seq for each of flanking gene and return a list of translation-seqs
+- `select_flanking_genes` - select flanking genes for one specific gene and return list of these genes
+  
+  **NOTE:** `read_lines_from_gbk`, `find_translation_in_gbk`, `find_flanking_genes` supporting functions for `select_flanking_genes`
+  
 
 ### Examples
 #### dna_rna_tools
@@ -103,6 +113,8 @@ print(d)
 #'@SRX079804:1:SRR292678:1:1101:190845:190845': ('CCTCAGCGTGGATTGCCGCTCATGCAGGAGCAGATAATCCCTTCGCCATCCCATTAAGCGCCGTTGTCGGTATTCC', #'FF@FFCFEECEBEC@@BBBBDFBBFFDFFEFFEB8FFFFFFFFEFCEB/>BBA@AFFFEEEEECE;ACD@DBBEEE'),
 #'@SRX079804:1:SRR292678:1:1101:204480:204480': ('AGTGAGACACCCCTGAACATTCCTAGTAAGACATCTTTGAATATTACTAGTTAGCCACACTTTAAAATGACCCG','<98;<@@@:@CD@BCCDD=DBBCEBBAAA@9???@BCDBCGF=GEGDFGDBEEEEEFFFF=EDEE=DCD@@BBC')}
 ```
+#### convert_multiline_fasta_to_oneline
+- File with multiline fasta ([input](https://github.com/rereremin/Bioinformatics-Toolbox/blob/hw6/examples/example_multiline_fasta.fasta))
    
 ### Additional information
 - The `dna_rna_tools` works **only** with DNA and RNA sequences. If any of the entered sequences contains inappropriate characters or cannot exist, the program prints message "It isn't RNA or DNA".
