@@ -1,4 +1,5 @@
-ALPHABET_PROTEIN = {"A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y",}
+ALPHABET_PROTEIN = {"A","C","D","E","F","G","H","I","K","L","M",
+                    "N","P","Q","R","S","T","V","W","Y",}
 ALPHABET_RNA = {"A", "U", "G", "C"}
 AMINO_ACID_MASS = {
     "A": 71.03711, "R": 156.10111, "N": 114.04293, "D": 115.02694, "C": 103.00919, "Q": 128.05858,"E": 129.04259,
@@ -257,7 +258,7 @@ def run_protein_tools(*args: str):
     contain only three arguments: RNA sequence, protein sequence
     and the name of procedure itself.
     """
-    *seqs, procedure = args
+    *seqs, operation = args
     results = []
     operations = {
         "compute_molecular_weight": compute_molecular_weight,
@@ -267,16 +268,16 @@ def run_protein_tools(*args: str):
         "protein_to_dna": protein_to_dna
 
     }
-    if procedure == "check_mutations":
+    if operation == "check_mutations":
         results.append(check_mutations(seqs[0], seqs[1]))
     else:
         for seq in seqs:
             if is_protein(seq) is not True:
-                raise ValueError("Invalid protein sequence")
-            if procedure not in operations:
-                raise ValueError("Wrong procedure name")
+                raise ValueError(f"Invalid protein sequence ({seq})")
+            if operation not in operations:
+                raise ValueError(f"Wrong operation name ({operation})")
             else:
-                results.append(operations[procedure](seq))
+                results.append(operations[operation](seq))
     if len(results) == 1:
         return results[0]
     else:
