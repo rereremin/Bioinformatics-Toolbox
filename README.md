@@ -95,7 +95,7 @@ print(d)
 ```
    
 ### Additional information
-- The `dna_rna_tools` works **only** with DNA and RNA sequences. If any of the entered sequences contain inappropriate characters or cannot exist, the program print message "It isn't RNA or DNA".
+- The `dna_rna_tools` works **only** with DNA and RNA sequences. If any of the entered sequences contains inappropriate characters or cannot exist, the program print message "It isn't RNA or DNA".
 - The `protein_tools` works **only** with protein and RNA sequences. If any of the entered sequences contain inappropriate characters or cannot exist, the program will display an error. Sequences can contain characters of any case.
 - For the procedure `check_mutations` there are extra requirements for RNA and protein sequences: mRNA sequences must contain **start-codon** and **one of the stop-codons**, protein sequnces must start with **"M"** and ends with **"*"** (stop-codon). 
 ```python
