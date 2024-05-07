@@ -12,12 +12,19 @@ The structure is represented by class `BiologicalSequence`, from which class `Nu
 
 In addition to the classes described above, other functions `filter_fastq` and `telegram_logger` (decorator) are implemented in this module. They are described below: 
 
-- `filter_fastq` filters Fastq format files by three attributes: length, GC-composition, quality. Output filtered sequences to a new file.
-- `telegram_logger` this function is implemented on Telegram bot API and it is needed to send messages and log files of running scripts to Telegram chat for notification.
+- func `filter_fastq` filters Fastq format files by three attributes: length, GC-composition, quality. Output filtered sequences to a new file.
+- func `telegram_logger` this function is implemented on Telegram bot API and it is needed to send messages and log files of running scripts to Telegram chat for notification.
 
 ## bio_files_processor.py
 This module implements functionality for working with fasta and gbk files:
-1) functions, to work with fasta
-   - `convert_multiline_fasta_to_oneline` converts multiline fasta to oneline and writes in fasta file
-   - 
-3) functions, to work with gbk
+1) functions and classes, to work with fasta:
+   - func `convert_multiline_fasta_to_oneline` converts multiline fasta to oneline and writes in fasta file;
+   - class `FastaRecord` returns a single record in a FASTA file;
+   - class `OpenFasta` an iterator over fasta files, displaying the id description of the sequence and the sequence itself.
+2) functions, to work with gbk:
+   - func `read_lines_from_gbk` read lines in GBK and find lines with common pattern and create a list with strings, which start with this pattern;
+   - func `find_translation_in_gbk` find translation-seq for one gene and return it;
+   - func `find_flanking_genes` find translation-seq for each of flanking gene and return a list 
+    of translation-seqs;
+   - func `select_flanking_genes` select flanking genes for one specific gene and return list of these genes;
+   - func `select_genes_from_gbk_to_fasta` select flanking genes from GBK for everyone in list of genes (genes) and write in fasta file.
