@@ -1,5 +1,11 @@
 import Bio.SeqIO as SeqIO
 import Bio.SeqUtils as SeqUt
+import requests
+import io
+import os
+import sys
+import datetime
+from dotenv import load_dotenv
 
 class BiologicalSequence:
     """
@@ -234,15 +240,12 @@ def filter_fastq(input_file, output_file, gc_bounds=(60, 100), length=(0, 2**32)
     - quality_threshold (int): minimum permissible value of quality
     """    
     filtered_records = []
-
     left_gc_bound = gc_bounds[0]
     right_gc_bound = gc_bounds[1]
-
     left_len_bound = length[0]
     right_len_bound = length[1]
 
     with open(output_file, "w") as output_name:
-
         for record in SeqIO.parse(input_file, "fastq"):
             gc_content = SeqUt.GC(record.seq)
             if len(record.seq) >= left_len_bound and len(record.seq) <= right_len_bound:
@@ -253,5 +256,60 @@ def filter_fastq(input_file, output_file, gc_bounds=(60, 100), length=(0, 2**32)
 
     print(f'Filtered sequences were recorded in {output_file}')    
 
+load_dotenv()
+bot_token = os.getenv("TG_API_TOKEN")
+
+def send_telegram_message(bot_token, chat_id, message, file=None, file_name=None):
+    if file:
+        url = f"https://api.telegram.org/bot{bot_token}/sendDocument"
+        message_data = {"chat_id": chat_id, "caption": message, "parse_mode": "HTML"}
+        file_data = {'document': (file_name, file)}
+        requests.get(url, data=message_data, files=file_data)
+    else:
+        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        message_data = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
+        requests.post(url, data=message_data)
+
+
+def make_post(chat_id, bot_token, func_name, success=True, execution_time=None, output=None, exception=None):
+    if success:
+        message = (f"✅ Function <code>{func_name}</code> successfully finished in <code>{execution_time}</code>.")
+        if output:
+            log_bytes = io.BytesIO(output.encode('utf-8'))
+            log_bytes.name = f"{func_name}.log"
+            send_telegram_message(bot_token, chat_id, message, log_bytes, log_bytes.name)
+        else:
+            send_telegram_message(bot_token, chat_id, message)
+    else:
+        error_message = f"❌ Function <code>{func_name}</code> failed with an exception: \n\n<code>{type(exception).__name__}: {str(exception)}</code>"
+        if output:
+            log_bytes = io.BytesIO(output.encode('utf-8'))
+            log_bytes.name = f"{func_name}.log"
+            send_telegram_message(bot_token, chat_id, error_message, log_bytes, log_bytes.name)
+        else:
+            send_telegram_message(bot_token, chat_id, error_message)
+
+
+def telegram_logger(chat_id):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            start_time = datetime.datetime.now()
+            log_capture_string = io.StringIO()
+            sys.stdout = log_capture_string
+            sys.stderr = log_capture_string
+            try:
+                result = func(*args, **kwargs)
+                output = log_capture_string.getvalue()
+                end_time = datetime.datetime.now()
+                execution_time = end_time - start_time
+                make_post(chat_id=chat_id, bot_token=bot_token, func_name=func.__name__, execution_time=execution_time, success=True,
+                          output=output)
+                return result
+            except Exception as e:
+                output = log_capture_string.getvalue()
+                make_post(chat_id=chat_id, bot_token=bot_token, func_name=func.__name__, success=False, output=output, exception=e)
+                raise
+        return wrapper
+    return decorator
 
 
