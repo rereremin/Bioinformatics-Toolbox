@@ -14,3 +14,10 @@ In addition to the classes described above, other functions `filter_fastq` and `
 
 - `filter_fastq` filters Fastq format files by three attributes: length, GC-composition, quality. Output filtered sequences to a new file.
 - `telegram_logger` this function is implemented on Telegram bot API and it is needed to send messages and log files of running scripts to Telegram chat for notification.
+
+## bio_files_processor.py
+This module implements functionality for working with fasta and gbk files:
+1) functions, to work with fasta
+   - `convert_multiline_fasta_to_oneline` converts multiline fasta to oneline and writes in fasta file
+   - 
+3) functions, to work with gbk
