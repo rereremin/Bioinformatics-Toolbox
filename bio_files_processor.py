@@ -169,6 +169,95 @@ def select_genes_from_gbk_to_fasta(input_gbk:str, genes:list, n_before=1, n_afte
             output_fasta.write("\n".join(item))
             output_fasta.write('\n\n')
         print(f"Flanking genes write in {output_file} file")
+        
+class FastaRecord:
+    """
+    Returns a single record in a FASTA file.
+
+    Attributes:
+        id (str): id of the record.
+        description (str): description of the record.
+        sequence (str): sequence data.
+    """
+    def __init__(self, id, description, sequence) -> None:
+        self.id = id
+        self.description = description
+        self.sequence = sequence
+
+    def __repr__(self) -> str:
+        """
+        Return a string representation of the FastaRecord object.
+
+        Returns:
+            str: A string representation of the FastaRecord object.
+        """
+        truncated_seq = self.sequence[:100] + "..." if len(self.sequence) > 100 else self.sequence
+        return f"{self.id} {self.description}\n{truncated_seq}\n"
+        
+class OpenFasta:
+    """
+    An iterator over fasta files,
+    displaying the id description of the sequence and the sequence itself.
+    """
+    def __init__(self, fasta) -> None:
+        self.fasta = fasta
+        self.file = None
+
+    def __enter__(self):
+        """
+        Open a file in read mode.
+        """
+        self.file = open(self.fasta, mode='r')
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        if self.file:
+            self.file.close()
+
+    def __iter__(self):
+        """
+        Create the iterator for fasta.
+        """
+        return self
+        
+    def __next__(self):
+        """
+        Return next record in fasta file.
+        """
+        record_id = ""
+        description_1 = ""
+        description_2 = ""
+        sequence = ""
+
+        line = self.file.readline().strip()
+        while line:
+            if line.startswith(">"):
+                if record_id:
+                    break
+                else:
+                    record_id, description_1, description_2 = line[1:].split(" ")
+            else:
+                sequence += line
+            line = self.file.readline().strip()
+
+        if not record_id and not sequence:
+            raise StopIteration
+
+        result = f'id = {record_id}\ndescription = {description_1} {description_2}\nsequence = {sequence}\n'
+
+        return result
+
+    def read_record(self):
+        """
+        Read and return the next fasta recoed from the file.
+        """
+        return next(self)
+
+    def read_records(self):
+        """
+        Return iterator over thr fasta records.
+        """
+        return self
 
 
  
