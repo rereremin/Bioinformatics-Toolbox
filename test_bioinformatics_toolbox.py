@@ -56,7 +56,7 @@ class TestAminoAcidSequence:
         hydrophobicity = aminoacid_seq.compute_hydrophobicity()
         assert hydrophobicity == 40.0
 
-    def test_compute_(self):
+    def test_type(self):
         """
         Check the type method of the AminoAcidSequence class.
         """
