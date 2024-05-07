@@ -202,6 +202,8 @@ class OpenFasta:
     def __init__(self, fasta) -> None:
         self.fasta = fasta
         self.file = None
+        self.name = None
+        self.seq = []
 
     def __enter__(self):
         """
@@ -221,31 +223,32 @@ class OpenFasta:
         return self
         
     def __next__(self):
-        """
-        Return next record in fasta file.
-        """
-        record_id = ""
-        description_1 = ""
-        description_2 = ""
-        sequence = ""
-
-        line = self.file.readline().strip()
-        while line:
+        for line in self.file:
+            line = line.strip()
             if line.startswith(">"):
-                if record_id:
-                    break
+                if self.name:
+                    record_id = self.name[1:].strip()
+                    parts = record_id.split(' ', 1)
+                    record_id = parts[0]
+                    description = parts[1] if len(parts) > 1 else ''
+                    sequence = ''.join(self.seq)
+                    self.name = line
+                    self.seq = []
+                    return FastaRecord(record_id, description, sequence)
                 else:
-                    record_id, description_1, description_2 = line[1:].split(" ")
+                    self.name = line
             else:
-                sequence += line
-            line = self.file.readline().strip()
-
-        if not record_id and not sequence:
-            raise StopIteration
-
-        result = f'id = {record_id}\ndescription = {description_1} {description_2}\nsequence = {sequence}\n'
-
-        return result
+                self.seq.append(line)
+        if self.name:
+            record_id = self.name[1:].strip()
+            parts = record_id.split(' ', 1)
+            record_id = parts[0]
+            description = parts[1] if len(parts) > 1 else ''
+            sequence = ''.join(self.seq)
+            self.name = None
+            self.seq = []
+            return FastaRecord(record_id, description, sequence)
+        raise StopIteration
 
     def read_record(self):
         """
@@ -257,8 +260,7 @@ class OpenFasta:
         """
         Return iterator over thr fasta records.
         """
-        return self
-
+        return list(self)
 
  
 
