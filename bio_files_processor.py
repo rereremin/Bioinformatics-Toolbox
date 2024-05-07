@@ -10,23 +10,33 @@ def convert_multiline_fasta_to_oneline(input_fasta:str, output_fasta="") -> str:
     - input_fasta (str): multiline fasta file 
     - output_fasta (str): name of file, where saved lines, has default value equal ""
     """
-    with open(os.path.abspath(input_fasta)) as fasta_file:
-        
-        list_of_lines = []
-        for line in fasta_file.readlines():
+    with open(input_fasta, mode='r') as fasta_file:
+        sequence_name = ""
+        sequence = ""
+        results = []
+        for line in fasta_file:
+            line = line.strip()
             if line.startswith(">"):
-                line = "\t"
-            list_of_lines.append(line)
+                if sequence_name:
+                    results.append((sequence_name, sequence))
+                sequence_name = line
+                sequence = ""
+            else:
+                sequence += line
 
-    longlines_to_file = "".join(list_of_lines[1:]).replace("\n", "").replace("\t", "\n")
+        if sequence_name:
+            results.append((sequence_name, sequence))
 
-    if output_fasta == "":
-        raise ValueError("File hasn't got name!")
-    
-    output_file = output_fasta+".fasta"
-    with open(output_file, mode="w") as output_longline:
-        output_longline.write(longlines_to_file)
-        print(f"FASTA-seq write in { output_file} file")
+    if output_fasta is None:
+        input_filename = os.path.splitext(os.path.basename(input_fasta))[0]
+        output_fasta = f"{input_filename}_long_seq.fasta"
+    elif not output_fasta.endswith('.fasta'):
+        output_fasta += '.fasta'
+
+    with open(output_fasta, mode='w') as output_file:
+        for sequence_name, sequence in results:
+            output_file.write(f'{sequence_name}\n{sequence}\n')
+    return "Your data was saved into output file"
 
 
 def read_lines_from_gbk(input_gbk:str, line_name:str) -> list:
