@@ -1,4 +1,4 @@
-# BreadcrumbsBioinformatics-Toolbox
+# Bioinformatics-Toolbox
 This repo was created over the course of one academic year while studying at the Bioinformatics Institute. It provides basic functionality for working with **biological sequences**, processing information from **fasta** and **gbk** files, and presents the implementation of a **random forest using parallelisation**. 
 
 Also here you can find tests for checking modules and examples of using functions from modules.
